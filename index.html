@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kapish Boutique | Custom Designer Wear</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide Icons for aesthetic vectors -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Load Playfair Display font for aesthetic titles -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for the Muted Rose accent (Pastel/Feminine) */
+        .kapish-rose {
+            color: #e0b7c7; /* Muted Rose/Dusty Pink accent */
+        }
+        .bg-kapish-rose {
+            background-color: #e0b7c7;
+        }
+        .text-rose-dark {
+            color: #a16b80; /* A darker shade of the rose for strong text contrast */
+        }
+        /* Setting Inter font as default, Playfair for aesthetic headings */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fcfcfc; /* Cleaner white/off-white background */
+            color: #333; /* Soft dark text */
+        }
+        .aesthetic-title {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        /* --- Animation Styles for Fade-In Effects --- */
+
+        /* Initial Page Load Fade-In */
+        body {
+            opacity: 0;
+            transition: opacity 1s ease-out;
+        }
+        body.loaded {
+            opacity: 1;
+        }
+
+        /* Scroll Reveal Effect Base State */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        /* Scroll Reveal Active State */
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Moving Background Styles (Responsive and Fluid) --- */
+        @keyframes slide-bg {
+            0% {
+                transform: translateX(0);
+            }
+            /* Moves the container 100% of its own width, ensuring the 5th image slides perfectly into the 1st image's place for a seamless loop */
+            100% {
+                transform: translateX(-80%); 
+            }
+        }
+        /* Container holds 5 images, so it's 500% the width of the viewport. */
+        .background-slider-container {
+            width: 500%; 
+            height: 100%;
+            display: flex;
+            /* Use linear animation for smooth, constant speed */
+            animation: slide-bg 60s linear infinite; 
+        }
+        
+        .background-slide-item {
+            width: 20%; /* Each item takes 1/5th of the container width (100% of the viewport width) */
+            height: 100%;
+            background-size: cover; /* Ensures image covers the area without distortion */
+            background-position: center;
+        }
+
+        /* FIX: Prevents user from resizing the inquiry message text area */
+        .no-resize {
+            resize: none;
+        }
+        /* --- MODAL CSS (NEW) --- */
+        /* Modal visibility states for smooth transition */
+        #submission-modal {
+            transition: opacity 0.3s ease-out;
+        }
+        #submission-modal.visible {
+            opacity: 1;
+            display: flex !important; /* Forces visibility */
+        }
+        #submission-modal > div {
+            transition: transform 0.3s ease-out;
+            transform: scale(0.95); /* Start small */
+        }
+        #submission-modal.visible > div {
+            transform: scale(1); /* End at full size (pop-up effect) */
+        }
+
+    </style>
+</head>
+<body class="text-gray-900">
+
+    <!-- Navigation Bar -->
+    <nav class="sticky top-0 z-50 bg-white shadow-lg">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo/Brand Name (Made clickable to scroll to top) -->
+                <div class="flex-shrink-0 cursor-pointer" id="logo-link">
+                    <span class="text-2xl font-extrabold tracking-tight text-gray-900 aesthetic-title">
+                        Kapish <span class="kapish-rose text-rose-dark">Boutique</span>
+                    </span>
+                </div>
+                <!-- Desktop Links (ALIGNED: items-center used for perfect vertical centering) -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-center space-x-4">
+                        <!-- Links updated with new hover color and smooth scroll functionality via JS -->
+                        <a href="#home" class="nav-link text-gray-700 hover:text-rose-dark px-3 py-2 rounded-md text-sm font-medium transition duration-150">Home</a>
+                        <a href="#gallery" class="nav-link text-gray-700 hover:text-rose-dark px-3 py-2 rounded-md text-sm font-medium transition duration-150">Gallery</a>
+                        <a href="#testimonials" class="nav-link text-gray-700 hover:text-rose-dark px-3 py-2 rounded-md text-sm font-medium transition duration-150">Feedback</a>
+                        <a href="#contact" class="nav-link text-gray-700 hover:text-rose-dark px-3 py-2 rounded-md text-sm font-medium transition duration-150">Contact Us</a>
+                        
+                        <!-- Instagram Icon (ALIGNED: Adjusted padding and added flex centering) -->
+                        <a href="" target="_blank" aria-label="Instagram Profile" class="text-gray-700 hover:text-rose-dark px-2 py-2 rounded-md transition duration-150 flex items-center justify-center">
+                            <i data-lucide="instagram" class="w-6 h-6"></i>
+                        </a>
+                    </div>
+                </div>
+                <!-- Mobile Menu Button (Hamburger) -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-gray-700 hover:text-rose-dark focus:outline-none p-2 rounded-md">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu (Hidden by default) -->
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 flex flex-col items-center">
+                <!-- Added nav-link class to mobile links -->
+                <a href="#home" class="nav-link text-gray-700 hover:bg-pink-50 block px-3 py-2 rounded-md text-base font-medium w-full text-center">Home</a>
+                <a href="#gallery" class="nav-link text-gray-700 hover:bg-pink-50 block px-3 py-2 rounded-md text-base font-medium w-full text-center">Gallery</a>
+                <a href="#testimonials" class="nav-link text-gray-700 hover:bg-pink-50 block px-3 py-2 rounded-md text-base font-medium w-full text-center">Feedback</a>
+                <a href="#contact" class="nav-link text-gray-700 hover:bg-pink-50 block px-3 py-2 rounded-md text-base font-medium w-full text-center">Contact Us</a>
+                <a href="https://www.instagram.com/kapishboutique" target="_blank" aria-label="Instagram Profile" class="text-gray-700 hover:text-rose-dark block px-3 py-2 rounded-md text-base font-medium">
+                    <i data-lucide="instagram" class="w-6 h-6 mx-auto"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section (Now with Moving Background Slider) -->
+    <header id="home" class="relative bg-pink-50 h-96 sm:h-[400px] lg:h-[500px] flex items-center justify-center overflow-hidden reveal">
+        
+        <!-- Moving Background Slider Layer -->
+        <!-- The container uses relative widths (500%) and CSS transforms for fluid motion -->
+        <div class="absolute inset-0 background-slider-container">
+            <!-- 5 Repeating Image Slots (Replace these with your actual image URLs later) -->
+            <div class="background-slide-item" style="background-image: url('https://i.postimg.cc/pVB4RQ0L/image.png');"></div>
+            <div class="background-slide-item" style="background-image: url('https://i.postimg.cc/jSvyj5pK/image.png');"></div>
+            <div class="background-slide-item" style="background-image: url('https://i.postimg.cc/V60f2G9z/image.png');"></div>
+            <div class="background-slide-item" style="background-image: url('https://i.postimg.cc/j5fbtJGB/image.png');"></div>
+            <div class="background-slide-item" style="background-image: url('https://i.postimg.cc/ryS0msWp/image.png');"></div>
+        </div>
+
+        <!-- Semi-transparent White Overlay for Text Readability -->
+        <div class="absolute inset-0 bg-white opacity-60"></div>
+
+        <div class="relative z-10 text-center px-4 text-gray-900">
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold aesthetic-title leading-tight reveal">
+                Crafting <span class="kapish-rose text-rose-dark">Elegance</span>, Thread by Thread
+            </h1>
+            <p class="mt-4 text-lg sm:text-xl text-gray-700 max-w-2xl mx-auto reveal" style="transition-delay: 0.2s;">
+                Discover bespoke suits, saris, and designer court sets made with passion and precision.
+            </p>
+            <!-- Call to Action button updated with new color scheme -->
+            <a href="gallery_extended.html" target="_blank" class="nav-link mt-8 inline-block bg-kapish-rose text-gray-900 font-semibold py-3 px-8 rounded-full shadow-xl hover:bg-rose-dark hover:text-white transition duration-300 transform hover:scale-105 reveal" style="transition-delay: 0.4s;">
+                View More
+            </a>
+        </div>
+    </header>
+
+    <!-- Legacy & Introduction Section (Text elements marked for reveal) -->
+    <section class="py-16 bg-pink-50 reveal">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-4 aesthetic-title text-gray-800 reveal">Our Legacy of Excellence</h2>
+            <p class="text-gray-600 mb-10 max-w-2xl mx-auto reveal" style="transition-delay: 0.1s;">Nearly two decades of dedication to handcrafted perfection.</p>
+            
+            <!-- Corrected Box Format: Soft, rounded cards with strong border accents -->
+            <div class="flex flex-col md:flex-row justify-center items-center space-y-6 md:space-y-0 md:space-x-8 mt-8">
+                <!-- Statistic 1: Years of Service -->
+                <div class="p-8 bg-white rounded-2xl shadow-xl border-b-4 border-kapish-rose flex flex-col items-center w-full md:w-80 transform transition duration-300 hover:shadow-2xl hover:-translate-y-1 reveal" style="transition-delay: 0.2s;">
+                    <i data-lucide="calendar-check" class="w-10 h-10 mb-3 text-rose-dark"></i>
+                    <p class="text-5xl font-extrabold text-rose-dark aesthetic-title">2005</p>
+                    <p class="text-gray-700 mt-2 font-medium">Established Since</p>
+                </div>
+                <!-- Statistic 2: Customer Count -->
+                <div id="stats-reveal-target" class="p-8 bg-white rounded-2xl shadow-xl border-b-4 border-kapish-rose flex flex-col items-center w-full md:w-80 transform transition duration-300 hover:shadow-2xl hover:-translate-y-1 reveal" style="transition-delay: 0.3s;">
+                    <i data-lucide="users" class="w-10 h-10 mb-3 text-rose-dark"></i>
+                    <p id="customer-count" data-target="500" class="text-5xl font-extrabold text-rose-dark aesthetic-title">0</p>
+                    <p class="text-gray-700 mt-2 font-medium">Delighted Clients</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section (Reverted button text and link) -->
+    <section id="gallery" class="py-16 bg-white reveal">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-extrabold aesthetic-title text-center mb-12 text-rose-dark reveal">Our Latest Creations</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                
+                <!-- Gallery items (8 items) -->
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal">
+                    <img src="images/green suit 1.png" alt="Designer Suit" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4">
+                        <p class="text-lg font-semibold text-white">Bespoke Suit Collection</p>
+                    </div>
+                </div>
+
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal" style="transition-delay: 0.1s;">
+                    <img src="images/sare.png" alt="Elegant Saree Design" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4">
+                        <p class="text-lg font-semibold text-white">Saree Design: The 'Rose' Line</p>
+                    </div>
+                </div>
+
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal" style="transition-delay: 0.2s;">
+                    <img src="images/court set.png" alt="Court Set / Lehenga" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4">
+                        <p class="text-lg font-semibold text-white">Designer Court Set</p>
+                    </div>
+                </div>
+
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal" style="transition-delay: 0.3s;">
+                    <img src="images/pink.png" alt="Other Custom Suit" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4">
+                        <p class="text-lg font-semibold text-white">Exclusive Custom Suit</p>
+                    </div>
+                </div>
+
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal" style="transition-delay: 0.4s;">
+                    <img src="images/Intricate Embroidery.png" alt="Embroidery Detail" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4">
+                        <p class="text-lg font-semibold text-white">Intricate Embroidery</p>
+                    </div>
+                </div>
+
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal" style="transition-delay: 0.5s;">
+                    <img src="images/bridal.png" alt="Bridal Wear" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4">
+                        <p class="text-lg font-semibold text-white">Bridal Range</p>
+                    </div>
+                </div>
+
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal" style="transition-delay: 0.6s;">
+                    <img src="images/modern kurti.png" alt="Casual Kurti" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4">
+                        <p class="text-lg font-semibold text-white">Modern Casual Wear</p>
+                    </div>
+                </div>
+
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal" style="transition-delay: 0.7s;">
+                    <img src="images/fabric detail.png" alt="Fabric Detail" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4">
+                        <p class="text-lg font-semibold text-white">Premium Fabric Selection</p>
+                    </div>
+                </div>
+
+            </div>
+            
+            <!-- Call to Action: Inquire About Custom Orders (links to contact section) -->
+            <div class="text-center mt-12 reveal" style="transition-delay: 0.8s;">
+                <a href="#contact" class="nav-link inline-block border-2 border-kapish-rose text-gray-900 font-semibold py-3 px-8 rounded-full hover:bg-kapish-rose hover:text-white transition duration-300">
+                    Inquire About Custom Orders
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Customer Feedback Section (Text elements marked for reveal) -->
+    <section id="testimonials" class="py-16 bg-pink-50 reveal">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-extrabold aesthetic-title text-center mb-12 text-gray-800 reveal">What Our Customers Say</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Testimonial 1 -->
+                <div class="bg-white p-6 rounded-2xl shadow-xl border-t-4 border-kapish-rose reveal" style="transition-delay: 0.1s;">
+                    <i data-lucide="quote" class="w-8 h-8 text-rose-dark mb-3"></i>
+                    <p class="italic text-gray-700">"The saree design was absolutely breathtaking. The fitting and attention to detail surpassed my expectations. Kapish Boutique delivers genuine quality."</p>
+                    <p class="mt-4 font-semibold text-rose-dark">- Priya</p>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-white p-6 rounded-2xl shadow-xl border-t-4 border-kapish-rose reveal" style="transition-delay: 0.2s;">
+                    <i data-lucide="quote" class="w-8 h-8 text-rose-dark mb-3"></i>
+                    <p class="italic text-gray-700">"I've been a customer since 2018. Their bespoke suits are perfect for formal events. Timings are reliable and the staff is always helpful."</p>
+                    <p class="mt-4 font-semibold text-rose-dark">- Taniya</p>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-white p-6 rounded-2xl shadow-xl border-t-4 border-kapish-rose reveal" style="transition-delay: 0.3s;">
+                    <i data-lucide="quote" class="w-8 h-8 text-rose-dark mb-3"></i>
+                    <p class="italic text-gray-700">"The court set I ordered for my sister's wedding was the highlight of the event. The fabric selection and embroidery were flawless. Highly recommend!"</p>
+                    <p class="mt-4 font-semibold text-rose-dark">- Gurjot Kaur</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section (Text elements marked for reveal) -->
+    <section id="contact" class="py-16 bg-gray-800 text-white reveal">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-extrabold aesthetic-title text-center mb-12 text-white reveal">Get In Touch</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                
+                <!-- Address -->
+                <div class="flex flex-col items-center text-center reveal" style="transition-delay: 0.1s;">
+                    <i data-lucide="map-pin" class="w-8 h-8 kapish-rose mb-3"></i>
+                    <h3 class="text-xl font-semibold mb-2">Location</h3>
+                    <p class="text-gray-400">#5587 St. No. 5 New Shvaji Nagar</p>
+                    <p class="text-gray-400">Ludhiana, Punjab 141008</p>
+                </div>
+
+                <!-- Contact Details -->
+                <div class="flex flex-col items-center text-center reveal" style="transition-delay: 0.2s;">
+                    <i data-lucide="phone" class="w-8 h-8 kapish-rose mb-3"></i>
+                    <h3 class="text-xl font-semibold mb-2">Contact Info</h3>
+                    <p class="text-gray-400 mb-1">Phone: +91 75084 61623</p>
+                    <p class="text-gray-400">Email: kapishboutique7@gmail.com</p>
+                </div>
+
+                <!-- Work Timings -->
+                <div class="flex flex-col items-center text-center reveal" style="transition-delay: 0.3s;">
+                    <i data-lucide="clock" class="w-8 h-8 kapish-rose mb-3"></i>
+                    <h3 class="text-xl font-semibold mb-2">Boutique Timings</h3>
+                    <p class="text-gray-400">Monday - Saturday</p>
+                    <p class="text-gray-400 font-bold">10 AM to 7 PM</p>
+                    <p class="text-gray-400 mt-1">(Sunday: Closed)</p>
+                </div>
+            </div>
+
+            <!-- Contact Form Placeholder -->
+            <div class="mt-16 max-w-lg mx-auto p-6 bg-gray-700 rounded-2xl shadow-2xl reveal" style="transition-delay: 0.4s;">
+                <h3 class="text-2xl font-bold aesthetic-title mb-6 text-center text-white">Send Us an Inquiry</h3>
+                <form id="inquiry-form" action="https://formspree.io/f/mzzjrnez" method="POST">
+                    <input type="hidden" name="_subject" value="New Inquiry for Kapish Boutique">
+                    <input type="hidden" name="_next" value="https://yourdomain.com/thank-you.html"> <input type="text" name="Name" placeholder="Your Name" class="w-full p-3 mb-4 rounded-lg bg-gray-600 border border-gray-500 text-white placeholder-gray-300 focus:ring-kapish-rose focus:border-kapish-rose">
+                    
+                    <input type="tel" name="Phone_Number" placeholder="Your Phone Number" class="w-full p-3 mb-4 rounded-lg bg-gray-600 border border-gray-500 text-white placeholder-gray-300 focus:ring-kapish-rose focus:border-kapish-rose">
+                    
+                    <input type="email" name="_replyto" placeholder="Your Email" class="w-full p-3 mb-4 rounded-lg bg-gray-600 border border-gray-500 text-white placeholder-gray-300 focus:ring-kapish-rose focus:border-kapish-rose">
+                    
+                    <textarea name="Message" placeholder="Your Message or Inquiry Details" rows="4" class="w-full p-3 mb-4 rounded-lg bg-gray-600 border border-gray-500 text-white placeholder-gray-300 focus:ring-kapish-rose focus:border-kapish-rose no-resize"></textarea>
+                    
+                    <button type="submit" class="w-full bg-kapish-rose text-gray-900 font-bold py-3 rounded-lg hover:bg-rose-dark hover:text-white transition duration-300">
+                        Submit Inquiry
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </section>
+
+    <div id="submission-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-[100] flex items-center justify-center hidden p-4">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-sm w-full text-center transform transition duration-300 scale-95 aesthetic-title border-t-4 border-kapish-rose">
+            <i data-lucide="check-circle" class="w-12 h-12 text-rose-dark mx-auto mb-4"></i>
+            <h3 class="text-3xl font-bold text-gray-800 mb-2">Inquiry Sent! ✨</h3>
+            <p class="text-gray-600 mb-6 font-semibold">
+                Thank you for your interest in Kapish Boutique. We've received your request and will be in touch with you shortly to discuss your custom order!
+            </p>
+            <button id="close-modal" class="bg-kapish-rose text-gray-900 font-bold py-2 px-6 rounded-full hover:bg-rose-dark hover:text-white transition duration-200">
+                OK, Got it!
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer (Added .reveal class for scroll animation) -->
+    <footer class="bg-gray-800 text-gray-400 py-6 reveal">
+        <div class="container mx-auto px-4 text-center text-sm">
+            <p>&copy; <span id="year"></span> Kapish Boutique. All Rights Reserved.</p>
+            <div class="flex justify-center space-x-4 mt-2">
+                <a href="#home" class="nav-link hover:text-kapish-rose">Home</a>
+                <span class="text-gray-600">|</span>
+                <a href="#contact" class="nav-link hover:text-kapish-rose">Contact Us</a>
+                <span class="text-gray-600">|</span>
+                <a href="" target="_blank" aria-label="Instagram" class="hover:text-kapish-rose flex items-center">
+                    <i data-lucide="instagram" class="w-4 h-4 mr-1"></i> Instagram
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Mobile Menu, Footer Year, and Scroll Reveal -->
+   <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // TARGET ELEMENTS
+    const form = document.getElementById('inquiry-form');
+    const modal = document.getElementById('submission-modal');
+    const closeModalButton = document.getElementById('close-modal');
+
+    // COUNT ANIMATION TARGETS
+    const customerCountElement = document.getElementById('customer-count');
+    let isCountAnimated = false; // Flag to ensure animation only runs once
+
+    // --- 1. ANIMATION FUNCTION (NEW) ---
+    const animateValue = (element, start, end, duration) => {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            
+            // Calculate current value, ensuring it stays integer
+            const currentValue = Math.floor(progress * (end - start) + start);
+            
+            // Update the text, adding the '+' suffix at the end
+            if (progress < 1) {
+                element.innerHTML = currentValue;
+            } else {
+                element.innerHTML = end + '+';
+            }
+
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+        window.requestAnimationFrame(step);
+    };
+
+
+    // --- 2. REST OF THE JAVASCRIPT LOGIC ---
+
+    // Smooth Scroll Function
+    const smoothScrollTo = (targetId) => {
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+            window.scrollTo({
+                top: targetElement.offsetTop - 70, // Offset by navbar height
+                behavior: 'smooth'
+            });
+        }
+    };
+
+    // MODAL CONTROL FUNCTIONS
+    const showModal = () => {
+        setTimeout(() => {
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('visible');
+            }, 10);
+        }, 10);
+    };
+
+    const hideModal = () => {
+        modal.classList.remove('visible');
+        setTimeout(() => {
+            modal.style.display = 'none'; 
+        }, 300); 
+    };
+
+    // MODAL CLOSING EVENT
+    closeModalButton.addEventListener('click', hideModal);
+    
+    // Allow clicking outside the modal to close it
+    modal.addEventListener('click', (e) => {
+        if (e.target.id === 'submission-modal') {
+            hideModal();
+        }
+    });
+
+    // Initial Page Load Fade-In
+    window.onload = function() {
+        document.body.classList.add('loaded');
+    };
+
+    // Mobile Menu Toggle (and other general functions...)
+    const menuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    menuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    document.getElementById('logo-link').addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
+            if (href.startsWith('#')) {
+                e.preventDefault();
+                const targetId = href.substring(1);
+                smoothScrollTo(targetId);
+                
+                if (!mobileMenu.classList.contains('hidden')) {
+                     mobileMenu.classList.add('hidden');
+                }
+            }
+        });
+    });
+
+    // ASYNCHRONOUS FORM SUBMISSION
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const action = e.target.action;
+            const formData = new FormData(e.target);
+
+            try {
+                const response = await fetch(action, {
+                    method: 'POST',
+                    body: new URLSearchParams(formData),
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    showModal();
+                    form.reset();
+                } else {
+                    alert('Oops! Submission failed. Please verify your Formspree URL or try again later.');
+                }
+            } catch (error) {
+                console.error('Fetch Error:', error);
+                alert('Connection error. Please ensure your Formspree URL is correct and check your network.');
+            }
+        });
+    }
+
+    // SCROLL REVEAL AND COUNT ANIMATION LOGIC
+    const revealElements = document.querySelectorAll('.reveal');
+
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.15 
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                
+                // Trigger the customer count animation when its block is visible
+                if (entry.target.contains(customerCountElement) && customerCountElement && !isCountAnimated) {
+                    const target = parseInt(customerCountElement.getAttribute('data-target'));
+                    // DURATION INCREASED TO 5000MS (5 SECONDS)
+                    animateValue(customerCountElement, 0, target, 5000); 
+                    isCountAnimated = true; 
+                }
+                
+                // Stop observing general reveals once they are visible
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    revealElements.forEach(element => {
+        observer.observe(element);
+    });
+
+    // Set current year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+</script>
+
+</body>
+</html>

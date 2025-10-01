@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kapish Boutique | Extended Gallery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for the Muted Rose accent (Pastel/Feminine) */
+        .kapish-rose {
+            color: #e0b7c7; /* Muted Rose/Dusty Pink accent */
+        }
+        .bg-kapish-rose {
+            background-color: #e0b7c7;
+        }
+        .text-rose-dark {
+            color: #a16b80; /* A darker shade of the rose for strong text contrast */
+        }
+        /* Setting Inter font as default, Playfair for aesthetic headings */
+        body {
+            font-family: 'Inter', sans-serif;
+            /* CORRECTED: Reverted to light background for readability and aesthetic consistency */
+            background-color: #fcfcfc; 
+            color: #333; /* Soft dark text */
+        }
+        .aesthetic-title {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        /* --- Animation Styles for Fade-In Effects --- */
+
+        /* Initial Page Load Fade-In */
+        body {
+            opacity: 0;
+            transition: opacity 1s ease-out;
+            /* CORRECTED: Match the intended loaded background color (light/off-white) */
+            background-color: #fcfcfc;
+        }
+        body.loaded {
+            opacity: 1;
+            /* Ensuring loaded state also uses light background */
+            background-color: #fcfcfc;
+        }
+
+        /* Scroll Reveal Effect Base State */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        /* Scroll Reveal Active State */
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* FIX: Prevents user from resizing the inquiry message text area */
+        .no-resize {
+            resize: none;
+        }
+
+        /* --- MODAL CSS (NEW) --- */
+        /* Modal visibility states for smooth transition */
+        #submission-modal {
+            transition: opacity 0.3s ease-out;
+        }
+        #submission-modal.visible {
+            opacity: 1;
+            display: flex !important; /* Forces visibility */
+        }
+        #submission-modal > div {
+            transition: transform 0.3s ease-out;
+            transform: scale(0.95); /* Start small */
+        }
+        #submission-modal.visible > div {
+            transform: scale(1); /* End at full size (pop-up effect) */
+        }
+    </style>
+</head>
+<body class="text-gray-900">
+
+    <nav class="sticky top-0 z-50 bg-white shadow-lg">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0 cursor-pointer" id="logo-link">
+                    <span class="text-2xl font-extrabold tracking-tight text-gray-900 aesthetic-title">
+                        Kapish <span class="kapish-rose text-rose-dark">Boutique</span>
+                    </span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-center space-x-4">
+                        <a href="index.html#home" class="text-gray-700 hover:text-rose-dark px-3 py-2 rounded-md text-sm font-medium transition duration-150">Home</a>
+                        <a href="#extended-gallery" class="nav-link text-gray-700 hover:text-rose-dark px-3 py-2 rounded-md text-sm font-medium transition duration-150">Gallery</a>
+                        <a href="#testimonials" class="nav-link text-gray-700 hover:text-rose-dark px-3 py-2 rounded-md text-sm font-medium transition duration-150">Feedback</a>
+                        <a href="#contact" class="nav-link text-gray-700 hover:text-rose-dark px-3 py-2 rounded-md text-sm font-medium transition duration-150">Contact Us</a>
+                        
+                        <a href="" target="_blank" aria-label="Instagram Profile" class="text-gray-700 hover:text-rose-dark px-2 py-2 rounded-md transition duration-150 flex items-center justify-center">
+                            <i data-lucide="instagram" class="w-6 h-6"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-gray-700 hover:text-rose-dark focus:outline-none p-2 rounded-md">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 flex flex-col items-center">
+                <a href="index.html#home" class="text-gray-700 hover:bg-pink-50 block px-3 py-2 rounded-md text-base font-medium w-full text-center">Home</a>
+                <a href="#extended-gallery" class="nav-link text-gray-700 hover:bg-pink-50 block px-3 py-2 rounded-md text-base font-medium w-full text-center">Gallery</a>
+                <a href="#testimonials" class="nav-link text-gray-700 hover:bg-pink-50 block px-3 py-2 rounded-md text-base font-medium w-full text-center">Feedback</a>
+                <a href="#contact" class="nav-link text-gray-700 hover:bg-pink-50 block px-3 py-2 rounded-md text-base font-medium w-full text-center">Contact Us</a>
+                <a href="https://www.instagram.com/kapishboutique" target="_blank" aria-label="Instagram Profile" class="text-gray-700 hover:text-rose-dark block px-3 py-2 rounded-md text-base font-medium">
+                    <i data-lucide="instagram" class="w-6 h-6 mx-auto"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <header id="extended-gallery" class="relative bg-pink-50 h-64 sm:h-80 flex items-center justify-center overflow-hidden reveal">
+        <div class="absolute inset-0 bg-cover bg-center opacity-70" style="background-image: url('https://i.postimg.cc/gkhn5Jzg/extended.jpg');"></div>
+        <div class="absolute inset-0 bg-white opacity-60"></div>
+
+        <div class="relative z-10 text-center px-4 text-gray-900">
+            <h1 class="text-4xl sm:text-6xl font-extrabold aesthetic-title leading-tight reveal">
+                The <span class="kapish-rose text-rose-dark">Full</span> Collection
+            </h1>
+            <p class="mt-2 text-lg sm:text-xl text-gray-700 max-w-2xl mx-auto reveal" style="transition-delay: 0.2s;">
+                A curated view of our most recent custom designer creations.
+            </p>
+        </div>
+    </header>
+
+    <section class="py-16 bg-white reveal">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-extrabold aesthetic-title text-center mb-12 text-rose-dark reveal">Custom Designer Gallery</h2>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal">
+                    <img src="images/green suit 1.png" alt="Designer Suit" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4"><p class="text-lg font-semibold text-white">Suit - Detail A</p></div>
+                </div>
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal" style="transition-delay: 0.1s;">
+                    <img src="images/sare.png" alt="Elegant Saree Design" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4"><p class="text-lg font-semibold text-white">Saree - Blush</p></div>
+                </div>
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal" style="transition-delay: 0.2s;">
+                    <img src="images/bridal.png" alt="Court Set / Lehenga" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4"><p class="text-lg font-semibold text-white">Bridal</p></div>
+                </div>
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal" style="transition-delay: 0.3s;">
+                    <img src="images/pink.png" alt="Other Custom Suit" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4"><p class="text-lg font-semibold text-white">Kurti - Green Pastel</p></div>
+                </div>
+
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal" style="transition-delay: 0.4s;">
+                    <img src="images/Intricate Embroidery.png" alt="Embroidery Detail" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4"><p class="text-lg font-semibold text-white">Embroidery Close-up</p></div>
+                </div>
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal" style="transition-delay: 0.5s;">
+                    <img src="images/bridal gown.png" alt="Bridal Wear" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4"><p class="text-lg font-semibold text-white">Bridal Gown</p></div>
+                </div>
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal" style="transition-delay: 0.6s;">
+                    <img src="images/modern kurti.png" alt="Casual Kurti" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4"><p class="text-lg font-semibold text-white">Modern Kurti</p></div>
+                </div>
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal" style="transition-delay: 0.7s;">
+                    <img src="images/fabric detail.png" alt="Fabric Detail" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4"><p class="text-lg font-semibold text-white">Premium Fabric</p></div>
+                </div>
+
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal" style="transition-delay: 0.8s;">
+                    <img src="images/blue.png" alt="Embroidered Suit" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4"><p class="text-lg font-semibold text-white">Embroidered Suit</p></div>
+                </div>
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal" style="transition-delay: 0.9s;">
+                    <img src="images/chiffon saree.png" alt="Chiffon Saree" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4"><p class="text-lg font-semibold text-white">Chiffon Saree</p></div>
+                </div>
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal" style="transition-delay: 1.0s;">
+                    <img src="images/reception.png" alt="Reception Lehenga" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4"><p class="text-lg font-semibold text-white">Reception Lehenga</p></div>
+                </div>
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal" style="transition-delay: 1.1s;">
+                    <img src="images/evening.png" alt="Evening Wear" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4"><p class="text-lg font-semibold text-white">Evening Gown</p></div>
+                </div>
+
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal" style="transition-delay: 1.2s;">
+                    <img src="images/jacket.png" alt="Jacket Style Suit" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4"><p class="text-lg font-semibold text-white">Jacket Style Suit</p></div>
+                </div>
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal" style="transition-delay: 1.3s;">
+                    <img src="images/pastel lehenga.png" alt="Pastel Lehenga" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4"><p class="text-lg font-semibold text-white">Pastel Blue Lehenga</p></div>
+                </div>
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal" style="transition-delay: 1.4s;">
+                    <img src="images/gotta pati.png" alt="Gotta Patti" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4"><p class="text-lg font-semibold text-white">Gotta Patti Detail</p></div>
+                </div>
+                <div class="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition duration-300 reveal" style="transition-delay: 1.5s;">
+                    <img src="images/modern saree.png" alt="Modern Saree" class="w-full h-full object-cover aspect-[3/4] transition duration-500 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-pink-900 bg-opacity-30 flex items-end opacity-0 group-hover:opacity-100 transition duration-300 p-4"><p class="text-lg font-semibold text-white">Modern Saree Draping</p></div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    
+    <section id="testimonials" class="py-16 bg-pink-50 reveal">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-extrabold aesthetic-title text-center mb-12 text-gray-800 reveal">What Our Customers Say</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <div class="bg-white p-6 rounded-2xl shadow-xl border-t-4 border-kapish-rose reveal" style="transition-delay: 0.1s;">
+                    <i data-lucide="quote" class="w-8 h-8 text-rose-dark mb-3"></i>
+                    <p class="italic text-gray-700">"The saree design was absolutely breathtaking. The fitting and attention to detail surpassed my expectations. Kapish Boutique delivers genuine quality."</p>
+                    <p class="mt-4 font-semibold text-rose-dark">- Priya</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-xl border-t-4 border-kapish-rose reveal" style="transition-delay: 0.2s;">
+                    <i data-lucide="quote" class="w-8 h-8 text-rose-dark mb-3"></i>
+                    <p class="italic text-gray-700">"I've been a customer since 2018. Their bespoke suits are perfect for formal events. Timings are reliable and the staff is always helpful."</p>
+                    <p class="mt-4 font-semibold text-rose-dark">- Taniya</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-xl border-t-4 border-kapish-rose reveal" style="transition-delay: 0.3s;">
+                    <i data-lucide="quote" class="w-8 h-8 text-rose-dark mb-3"></i>
+                    <p class="italic text-gray-700">"The court set I ordered for my sister's wedding was the highlight of the event. The fabric selection and embroidery were flawless. Highly recommend!"</p>
+                    <p class="mt-4 font-semibold text-rose-dark">- Gurjot Kaur</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-16 bg-gray-800 text-white reveal">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-extrabold aesthetic-title text-center mb-12 text-white reveal">Get In Touch</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                
+                <div class="flex flex-col items-center text-center reveal" style="transition-delay: 0.1s;">
+                    <i data-lucide="map-pin" class="w-8 h-8 kapish-rose mb-3"></i>
+                    <h3 class="text-xl font-semibold mb-2">Location</h3>
+                    <p class="text-gray-400">#5587 St. No. 5 New Shvaji Nagar</p>
+                    <p class="text-gray-400">Ludhiana, Punjab 141008</p>
+                </div>
+
+                <div class="flex flex-col items-center text-center reveal" style="transition-delay: 0.2s;">
+                    <i data-lucide="phone" class="w-8 h-8 kapish-rose mb-3"></i>
+                    <h3 class="text-xl font-semibold mb-2">Contact Info</h3>
+                    <p class="text-gray-400 mb-1">Phone: +91 750840 61623</p>
+                    <p class="text-gray-400">Email: kapishboutique7@gmail.com</p>
+                </div>
+
+                <div class="flex flex-col items-center text-center reveal" style="transition-delay: 0.3s;">
+                    <i data-lucide="clock" class="w-8 h-8 kapish-rose mb-3"></i>
+                    <h3 class="text-xl font-semibold mb-2">Boutique Timings</h3>
+                    <p class="text-gray-400">Monday - Saturday</p>
+                    <p class="text-gray-400 font-bold">10 AM to 7 PM</p>
+                    <p class="text-gray-400 mt-1">(Sunday: Closed)</p>
+                </div>
+            </div>
+
+            <div class="mt-16 max-w-lg mx-auto p-6 bg-gray-700 rounded-2xl shadow-2xl reveal" style="transition-delay: 0.4s;">
+                <h3 class="text-2xl font-bold aesthetic-title mb-6 text-center text-white">Send Us an Inquiry</h3>
+                <form id="inquiry-form" action="https://formspree.io/f/mzzjrnez" method="POST">
+                    <input type="hidden" name="_subject" value="New Inquiry for Kapish Boutique">
+                    <input type="hidden" name="_next" value="https://yourdomain.com/thank-you.html"> <input type="text" name="Name" placeholder="Your Name" class="w-full p-3 mb-4 rounded-lg bg-gray-600 border border-gray-500 text-white placeholder-gray-300 focus:ring-kapish-rose focus:border-kapish-rose">
+                    
+                    <input type="tel" name="Phone_Number" placeholder="Your Phone Number" class="w-full p-3 mb-4 rounded-lg bg-gray-600 border border-gray-500 text-white placeholder-gray-300 focus:ring-kapish-rose focus:border-kapish-rose">
+                    
+                    <input type="email" name="_replyto" placeholder="Your Email" class="w-full p-3 mb-4 rounded-lg bg-gray-600 border border-gray-500 text-white placeholder-gray-300 focus:ring-kapish-rose focus:border-kapish-rose">
+                    
+                    <textarea name="Message" placeholder="Your Message or Inquiry Details" rows="4" class="w-full p-3 mb-4 rounded-lg bg-gray-600 border border-gray-500 text-white placeholder-gray-300 focus:ring-kapish-rose focus:border-kapish-rose no-resize"></textarea>
+                    
+                    <button type="submit" class="w-full bg-kapish-rose text-gray-900 font-bold py-3 rounded-lg hover:bg-rose-dark hover:text-white transition duration-300">
+                        Submit Inquiry
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </section>
+
+    <div id="submission-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 z-[100] flex items-center justify-center hidden p-4">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl max-w-sm w-full text-center transform transition duration-300 scale-95 aesthetic-title border-t-4 border-kapish-rose">
+            <i data-lucide="check-circle" class="w-12 h-12 text-rose-dark mx-auto mb-4"></i>
+            <h3 class="text-3xl font-bold text-gray-800 mb-2">Inquiry Sent! ✨</h3>
+            <p class="text-gray-600 mb-6 font-semibold">
+                Thank you for your interest in Kapish Boutique. We've received your request and will be in touch with you shortly to discuss your custom order!
+            </p>
+            <button id="close-modal" class="bg-kapish-rose text-gray-900 font-bold py-2 px-6 rounded-full hover:bg-rose-dark hover:text-white transition duration-200">
+                OK, Got it!
+            </button>
+        </div>
+    </div>
+
+    <footer class="bg-gray-800 text-gray-400 py-6 reveal">
+        <div class="container mx-auto px-4 text-center text-sm">
+            <p>&copy; <span id="year"></span> Kapish Boutique. All Rights Reserved.</p>
+            <div class="flex justify-center space-x-4 mt-2">
+                <a href="index.html#home" class="hover:text-kapish-rose">Home</a>
+                <span class="text-gray-600">|</span>
+                <a href="#contact" class="nav-link hover:text-kapish-rose">Contact Us</a>
+                <span class="text-gray-600">|</span>
+                <a href="" target="_blank" aria-label="Instagram" class="hover:text-kapish-rose flex items-center">
+                    <i data-lucide="instagram" class="w-4 h-4 mr-1"></i> Instagram
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // TARGET ELEMENTS
+    const form = document.getElementById('inquiry-form');
+    const modal = document.getElementById('submission-modal');
+    const closeModalButton = document.getElementById('close-modal');
+
+    // 1. Smooth Scroll Function
+    const smoothScrollTo = (targetId) => {
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+            window.scrollTo({
+                top: targetElement.offsetTop - 70, // Offset by navbar height
+                behavior: 'smooth'
+            });
+        }
+    };
+
+    // MODAL CONTROL FUNCTIONS
+    const showModal = () => {
+        // Use a timeout to ensure CSS transitions run properly
+        setTimeout(() => {
+            modal.classList.add('visible');
+        }, 10);
+    };
+
+    const hideModal = () => {
+        modal.classList.remove('visible');
+        // Hide the modal completely after transition ends (for focus/accessibility)
+        setTimeout(() => {
+            modal.style.display = 'none'; 
+        }, 300); 
+    };
+
+    // MODAL CLOSING EVENT
+    closeModalButton.addEventListener('click', hideModal);
+
+    // 2. Initial Page Load Fade-In
+    window.onload = function() {
+        document.body.classList.add('loaded');
+    };
+
+    // 3. Mobile Menu Toggle
+    const menuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    menuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    // 4. Logo Scroll to Top
+    document.getElementById('logo-link').addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // 5. Smooth Scroll for Navigation Links (desktop and mobile)
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
+            if (href.startsWith('#')) {
+                e.preventDefault();
+                const targetId = href.substring(1);
+                smoothScrollTo(targetId);
+                
+                // Close mobile menu after clicking a link
+                if (!mobileMenu.classList.contains('hidden')) {
+                     mobileMenu.classList.add('hidden');
+                }
+            }
+        });
+    });
+
+    // 6. ASYNCHRONOUS FORM SUBMISSION
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); // STOP page refresh/redirect
+            
+            const action = e.target.action;
+            const formData = new FormData(e.target);
+
+            // Send data using AJAX/Fetch
+            try {
+                const response = await fetch(action, {
+                    method: 'POST',
+                    body: new URLSearchParams(formData), // Format data for formspree/formsubmit
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    showModal();        // Show the unique pop-up message
+                    form.reset();       // Clear the form fields
+                } else {
+                    // Handle failure (e.g., show an error message)
+                    alert('Oops! There was an issue submitting your inquiry. Please try again.');
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Connection error. Please check your network.');
+            }
+        });
+    }
+
+    // 7. Set current year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+
+    // 8. Scroll Reveal Logic using Intersection Observer
+    const revealElements = document.querySelectorAll('.reveal');
+
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.15 
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                observer.unobserve(entry.target); 
+            }
+        });
+    }, observerOptions);
+
+    revealElements.forEach(element => {
+        observer.observe(element);
+    });
+
+</script>
+
+</body>
+</html>
